@@ -11,6 +11,12 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "incremental": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "strict": true,
+    "paths": {
+      "@config/*": ["src/config/*"],
+      "@providers/*": ["src/providers/*"],
+      "@shared/*": ["src/shared/*"]
+    }
   }
 }
