@@ -1,9 +1,8 @@
 import * as WebSocket from 'ws';
+import { WsServer } from './@types/websocket';
 import { WebSocketAdapter, INestApplicationContext } from '@nestjs/common';
 import { WsAdapter as WsAdapterNest } from '@nestjs/platform-ws';
 import IAccessTokenService from '@providers/interfaces/IAccessTokenService';
-
-type WsServer = WebSocket.Server;
 
 type Callback = (...args: any) => void;
 
