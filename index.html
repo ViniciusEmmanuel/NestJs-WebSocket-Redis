@@ -1,0 +1,94 @@
+<html>
+  <head>
+    <style>
+      html,
+      body {
+        margin: 0px;
+        padding: 0px;
+      }
+    </style>
+  </head>
+
+  <body
+    style="
+      width: 100%;
+      height: 100vh;
+      background-color: antiquewhite;
+      display: flex;
+      justify-content: center;
+    "
+  >
+    <section style="width: 600px">
+      <form name="ws" style="margin-top: 60px">
+        <label>
+          Enviar
+          <input type="text" name="input" />
+        </label>
+        <button type="submit">Push</button>
+      </form>
+      <div id="root"></div>
+    </section>
+    <script>
+      const root = document.querySelector('#root');
+
+      const createElement = () => document.createElement('p');
+
+      const appendElement = (text, right) => {
+        const tagP = createElement();
+        tagP.innerHTML = text;
+
+        if (right) {
+          tagP.style.textAlign = 'right';
+        }
+
+        root.appendChild(tagP);
+      };
+
+      const form = document.forms.item('ws');
+
+      const connectionSocket = () =>
+        new WebSocket(
+          'ws://localhost:7777/?accessToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwYXlsb2FkIjp7ImRldmljZUlkIjoiZDI5MGYxZWUtNmM1NC00YjAxLTkwZTYtZDcwMTc0OGYwODUxIn0sImlhdCI6MTYyOTA1Mjg2MiwiZXhwIjoxNjI5MzEyMDYyLCJzdWIiOiIzMmFmZDZlOS0xOTI4LTQ3OWQtOTk5My1lN2RhZmZmNTgwZTMifQ.rVZMemoIG4uuY7p_NJnoEe2m6RDEGQCs9nUKe0bgO1U',
+        );
+
+      function listenerSocket() {
+        const socket = connectionSocket();
+
+        socket.onopen = function () {
+          appendElement('Connected');
+
+          if (timeId) {
+            clearInterval(timeId);
+            timeId = null;
+          }
+
+          form.addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            const input = form.elements.item('input');
+
+            appendElement(input.value, true);
+
+            socket.send(JSON.stringify({ event: 'events', data: input.value }));
+          });
+        };
+
+        socket.onmessage = function (messageEvent) {
+          appendElement(messageEvent.data);
+        };
+
+        socket.onclose = function () {
+          socket.close();
+
+          appendElement('Close');
+
+          setTimeout(() => {
+            listenerSocket();
+          }, 2000);
+        };
+      }
+
+      listenerSocket();
+    </script>
+  </body>
+</html>
